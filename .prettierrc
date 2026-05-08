@@ -1,0 +1,12 @@
+{
+  "trailingComma": "none",
+  "tabWidth": 2,
+  "useTabs": true,
+  "semi": false,
+  "singleQuote": false,
+  "jsxSingleQuote": false,
+  "arrowParens": "always",
+  "importOrder": ["<THIRD_PARTY_MODULES>", "^@/components/(.*)$", "^@/hooks/(.*)$", "^@/services/(.*)$","^@/assets/(.*)$", "^../(.*)$", "^./(.*)$"],
+  "importOrderSeparation": true,
+  "importOrderSortSpecifiers": true
+}
