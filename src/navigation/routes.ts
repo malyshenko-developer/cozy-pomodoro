@@ -1,12 +1,8 @@
-import { Auth, Home, Profile, Settings } from "@/components/screens"
+import { Home, Profile, Settings, Statistics } from "@/components/screens"
 
 import { IRoute } from "./types"
 
 export const routes: IRoute[] = [
-	{
-		name: "Auth",
-		component: Auth
-	},
 	{
 		name: "Home",
 		component: Home
@@ -18,5 +14,9 @@ export const routes: IRoute[] = [
 	{
 		name: "Profile",
 		component: Profile
+	},
+	{
+		name: "Statistics",
+		component: Statistics
 	}
 ]

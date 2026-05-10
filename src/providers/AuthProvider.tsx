@@ -18,7 +18,7 @@ interface IContext {
 export const AuthContext = createContext<IContext | null>(null)
 
 const AuthProvider = ({ children }: PropsWithChildren) => {
-	const [user, setUser] = useState<UserState>(null)
+	const [user, setUser] = useState<UserState>({ _id: "123", email: "blabla" })
 
 	return (
 		<AuthContext.Provider value={{ user, setUser }}>
