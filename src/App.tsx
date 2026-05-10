@@ -1,12 +1,31 @@
-import { Text, View } from "react-native"
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import * as Splash from "expo-splash-screen"
+import { StatusBar } from "expo-status-bar"
+import { useEffect } from "react"
+import { SafeAreaProvider } from "react-native-safe-area-context"
+
+import AuthProvider from "@/providers/AuthProvider"
+
 import "@/global.css"
+import Navigation from "@/navigation/Navigation"
+
+void Splash.preventAutoHideAsync()
+
+const queryClient = new QueryClient()
 
 export default function App() {
+	useEffect(() => {
+		void Splash.hideAsync()
+	}, [])
+
 	return (
-		<View className="flex-1 items-center justify-center bg-[#1E1B2E]">
-			<Text className="text-xl font-bold text-blue-300">
-				Welcome to Cozy Pomodoro!
-			</Text>
-		</View>
+		<QueryClientProvider client={queryClient}>
+			<AuthProvider>
+				<SafeAreaProvider>
+					<Navigation />
+				</SafeAreaProvider>
+			</AuthProvider>
+			<StatusBar style={"light"} />
+		</QueryClientProvider>
 	)
 }
