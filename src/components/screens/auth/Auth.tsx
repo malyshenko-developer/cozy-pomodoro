@@ -8,6 +8,7 @@ import {
 	View
 } from "react-native"
 
+import AuthFields from "@/components/screens/auth/AuthFields"
 import Button from "@/components/ui/Button"
 import Loader from "@/components/ui/Loader"
 
@@ -20,7 +21,8 @@ const Auth = () => {
 	const { setUser } = useAuth()
 
 	const { control, reset, handleSubmit } = useForm<IAuthFormData>({
-		mode: "onChange"
+		mode: "onBlur",
+		reValidateMode: "onChange"
 	})
 
 	const onSubmit: SubmitHandler<IAuthFormData> = data => {
@@ -28,6 +30,7 @@ const Auth = () => {
 			_id: "123",
 			...data
 		})
+		reset({}, { keepErrors: false })
 	}
 
 	const onChangeMode = () => {
@@ -42,18 +45,18 @@ const Auth = () => {
 				<View className={"w-3/4"}>
 					<Text
 						className={
-							"text-white text-5xl font-bold text-center leading-[1.2]"
+							"text-white text-5xl font-bold text-center leading-[1.2] mb-5"
 						}
 					>
 						{isReg ? "Sign up" : "Sign in"}
 					</Text>
 
+					<AuthFields control={control} />
+
 					{isLoading ? (
 						<Loader />
 					) : (
 						<>
-							{/*Fields*/}
-
 							<Button onPress={handleSubmit(onSubmit)}>Let's go</Button>
 
 							<Pressable onPress={onChangeMode} className="mt-4 items-center">
