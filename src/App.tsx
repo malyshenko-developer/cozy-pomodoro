@@ -6,7 +6,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context"
 
 import AuthProvider from "@/providers/AuthProvider"
 
-import "@/global.css"
+import "./global.css"
 import Navigation from "@/navigation/Navigation"
 
 void Splash.preventAutoHideAsync()
