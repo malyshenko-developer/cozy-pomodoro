@@ -1,10 +1,12 @@
-import { Text, View } from "react-native"
+import Layout from "@/components/ui/layout/Layout"
+
+import Timer from "./timer/Timer"
 
 const Home = () => {
 	return (
-		<View>
-			<Text>Home</Text>
-		</View>
+		<Layout title={"Cozy Pomodoro Timer"}>
+			<Timer />
+		</Layout>
 	)
 }
 
