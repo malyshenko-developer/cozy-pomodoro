@@ -4,12 +4,12 @@ import {
 } from "@react-navigation/native"
 import { useEffect, useState } from "react"
 
-import BottomMenu from "@/components/ui/bottom-menu/BottomMenu"
+import BottomMenu from "@/components/ui/layout/bottom-menu/BottomMenu"
 
 import { useAuth } from "@/hooks/useAuth"
 
-import PrivateNavigation from "@/navigation/PrivateNavigation"
-import { TypeRootStackParamList } from "@/navigation/types"
+import PrivateNavigation from "./PrivateNavigation"
+import { TypeRootStackParamList } from "./types"
 
 const Navigation = () => {
 	const { user } = useAuth()
