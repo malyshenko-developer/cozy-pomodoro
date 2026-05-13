@@ -2,6 +2,7 @@ import { Foundation } from "@expo/vector-icons"
 import cn from "clsx"
 import { useState } from "react"
 import { Pressable, Text, View } from "react-native"
+import { CountdownCircleTimer } from "react-native-countdown-circle-timer"
 
 const Timer = () => {
 	const [isPlaying, setIsPlaying] = useState(false)
@@ -10,9 +11,35 @@ const Timer = () => {
 		setIsPlaying(!isPlaying)
 	}
 
+	const onCompletePlaying = () => {
+		setIsPlaying(false)
+	}
+
 	return (
-		<View>
-			<Text>Timer</Text>
+		<View className={"flex-1 justify-center"}>
+			<View className={"self-center"}>
+				<CountdownCircleTimer
+					isPlaying={isPlaying}
+					duration={7}
+					colors={["#3A356E", "#554FE9"]}
+					colorsTime={[7, 0]}
+					trailColor={"#2F304A"}
+					onComplete={onCompletePlaying}
+					strokeWidth={15}
+					size={300}
+				>
+					{({ remainingTime }) => {
+						const minutes = Math.floor(remainingTime / 60)
+						const seconds = remainingTime % 60
+
+						return (
+							<Text
+								className={"text-white text-7xl"}
+							>{`${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`}</Text>
+						)
+					}}
+				</CountdownCircleTimer>
+			</View>
 
 			<Pressable
 				onPress={onTogglePlaying}
