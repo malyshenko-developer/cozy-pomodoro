@@ -1,4 +1,5 @@
 export enum Status {
-	REST = "rest",
-	WORK = "work"
+	REST = "REST",
+	WORK = "WORK",
+	GOOD_JOB = "GOOD JOB"
 }

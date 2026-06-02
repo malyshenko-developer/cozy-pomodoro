@@ -1,19 +1,28 @@
 import { Foundation } from "@expo/vector-icons"
 import cn from "clsx"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Pressable, Text, View } from "react-native"
 import { CountdownCircleTimer } from "react-native-countdown-circle-timer"
 
 import { Status } from "./timer.interface"
 
-const flowDuration = 60
-const sessionCount = 5
+const FLOW_DURATION = 2
+const SESSION_COUNT = 5
 const breakDuration = 60
 
 const Timer = () => {
 	const [isPlaying, setIsPlaying] = useState(false)
-	const [status, setStatus] = useState<Status | null>(null)
-	const [currentSession, setCurrentSession] = useState<number>(4)
+	const [status, setStatus] = useState<Status | null>(Status.REST)
+	const [currentSession, setCurrentSession] = useState<number>(1)
+	const [flowDuration, setFlowDuration] = useState(FLOW_DURATION)
+
+	const isAllSessionsCompleted = currentSession > SESSION_COUNT
+
+	useEffect(() => {
+		if (isPlaying) {
+			setStatus(Status.WORK)
+		}
+	}, [isPlaying])
 
 	const onTogglePlaying = () => {
 		setIsPlaying(!isPlaying)
@@ -21,16 +30,27 @@ const Timer = () => {
 
 	const onCompletePlaying = () => {
 		setIsPlaying(false)
+		setCurrentSession(prev => prev + 1)
+		setFlowDuration(FLOW_DURATION)
+
+		if (currentSession === SESSION_COUNT) {
+			setStatus(Status.GOOD_JOB)
+		} else {
+			setStatus(Status.REST)
+		}
+
+		return { shouldRepeat: true }
 	}
 
 	return (
 		<View className={"flex-1 justify-center"}>
 			<View className={"self-center"}>
 				<CountdownCircleTimer
+					key={currentSession}
 					isPlaying={isPlaying}
 					duration={flowDuration}
 					colors={["#3A356E", "#554FE9"]}
-					colorsTime={[7, 0]}
+					colorsTime={[flowDuration, 0]}
 					trailColor={"#2F304A"}
 					onComplete={onCompletePlaying}
 					strokeWidth={15}
@@ -43,7 +63,7 @@ const Timer = () => {
 						return (
 							<>
 								<Text className={"text-center text-3xl text-primary mb-2"}>
-									{status === Status.WORK ? "WORK" : "REST"}
+									{status}
 								</Text>
 								<Text
 									className={"text-white text-7xl"}
@@ -54,7 +74,7 @@ const Timer = () => {
 				</CountdownCircleTimer>
 
 				<View className={"flex-row items-center mt-14 justify-center"}>
-					{[...Array(sessionCount)].map((_, index) => {
+					{[...Array(SESSION_COUNT)].map((_, index) => {
 						const isCompleted = index + 1 < currentSession
 						const isActive = index + 1 === currentSession
 
@@ -62,19 +82,21 @@ const Timer = () => {
 							"rounded-full border-4",
 							isActive && "w-7 h-7 bg-transparent border-primary",
 							isCompleted && "w-5 h-5 bg-primary opacity-50 border-transparent",
-							!isActive && !isCompleted && "w-5 h-5 bg-[#2F2B3F] border-transparent"
-						);
+							!isActive &&
+								!isCompleted &&
+								"w-5 h-5 bg-[#2F2B3F] border-transparent"
+						)
 
 						const lineClass = cn("w-7 h-0.5", {
 							"bg-primary opacity-50": index + 1 < currentSession,
 							"bg-[#2F2B3F]":
-								index + 1 >= currentSession && index + 1 < sessionCount
+								index + 1 >= currentSession && index + 1 < SESSION_COUNT
 						})
 
 						return (
 							<View className="flex-row items-center" key={`point ${index}`}>
 								<View className={pointClass} />
-								{index + 1 !== sessionCount && <View className={lineClass} />}
+								{index + 1 !== SESSION_COUNT && <View className={lineClass} />}
 							</View>
 						)
 					})}
@@ -88,6 +110,7 @@ const Timer = () => {
 					!isPlaying && "pl-2"
 				)}
 				style={{ elevation: 8 }}
+				disabled={isAllSessionsCompleted}
 			>
 				<Foundation
 					name={isPlaying ? "pause" : "play"}
