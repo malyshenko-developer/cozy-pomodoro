@@ -1,19 +1,26 @@
 import { Foundation } from "@expo/vector-icons"
 import cn from "clsx"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Pressable, Text, View } from "react-native"
 import { CountdownCircleTimer } from "react-native-countdown-circle-timer"
 
 import { Status } from "./timer.interface"
 
-const flowDuration = 60
+const FLOW_DURATION = 5
 const sessionCount = 5
 const breakDuration = 60
 
 const Timer = () => {
 	const [isPlaying, setIsPlaying] = useState(false)
 	const [status, setStatus] = useState<Status | null>(null)
-	const [currentSession, setCurrentSession] = useState<number>(4)
+	const [currentSession, setCurrentSession] = useState<number>(1)
+	const [flowDuration, setFlowDuration] = useState(FLOW_DURATION)
+
+	useEffect(() => {
+		if (isPlaying) {
+			setStatus(Status.WORK)
+		}
+	}, [isPlaying])
 
 	const onTogglePlaying = () => {
 		setIsPlaying(!isPlaying)
@@ -21,16 +28,22 @@ const Timer = () => {
 
 	const onCompletePlaying = () => {
 		setIsPlaying(false)
+		setCurrentSession(prev => prev + 1)
+		setFlowDuration(FLOW_DURATION)
+		setStatus(Status.REST)
+
+		return { shouldRepeat: true }
 	}
 
 	return (
 		<View className={"flex-1 justify-center"}>
 			<View className={"self-center"}>
 				<CountdownCircleTimer
+					key={currentSession}
 					isPlaying={isPlaying}
 					duration={flowDuration}
 					colors={["#3A356E", "#554FE9"]}
-					colorsTime={[7, 0]}
+					colorsTime={[flowDuration, 0]}
 					trailColor={"#2F304A"}
 					onComplete={onCompletePlaying}
 					strokeWidth={15}
@@ -62,8 +75,10 @@ const Timer = () => {
 							"rounded-full border-4",
 							isActive && "w-7 h-7 bg-transparent border-primary",
 							isCompleted && "w-5 h-5 bg-primary opacity-50 border-transparent",
-							!isActive && !isCompleted && "w-5 h-5 bg-[#2F2B3F] border-transparent"
-						);
+							!isActive &&
+								!isCompleted &&
+								"w-5 h-5 bg-[#2F2B3F] border-transparent"
+						)
 
 						const lineClass = cn("w-7 h-0.5", {
 							"bg-primary opacity-50": index + 1 < currentSession,
