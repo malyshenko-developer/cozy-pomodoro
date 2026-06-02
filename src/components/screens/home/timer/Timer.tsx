@@ -6,15 +6,17 @@ import { CountdownCircleTimer } from "react-native-countdown-circle-timer"
 
 import { Status } from "./timer.interface"
 
-const FLOW_DURATION = 5
-const sessionCount = 5
+const FLOW_DURATION = 2
+const SESSION_COUNT = 5
 const breakDuration = 60
 
 const Timer = () => {
 	const [isPlaying, setIsPlaying] = useState(false)
-	const [status, setStatus] = useState<Status | null>(null)
+	const [status, setStatus] = useState<Status | null>(Status.REST)
 	const [currentSession, setCurrentSession] = useState<number>(1)
 	const [flowDuration, setFlowDuration] = useState(FLOW_DURATION)
+
+	const isAllSessionsCompleted = currentSession > SESSION_COUNT
 
 	useEffect(() => {
 		if (isPlaying) {
@@ -30,7 +32,12 @@ const Timer = () => {
 		setIsPlaying(false)
 		setCurrentSession(prev => prev + 1)
 		setFlowDuration(FLOW_DURATION)
-		setStatus(Status.REST)
+
+		if (currentSession === SESSION_COUNT) {
+			setStatus(Status.GOOD_JOB)
+		} else {
+			setStatus(Status.REST)
+		}
 
 		return { shouldRepeat: true }
 	}
@@ -56,7 +63,7 @@ const Timer = () => {
 						return (
 							<>
 								<Text className={"text-center text-3xl text-primary mb-2"}>
-									{status === Status.WORK ? "WORK" : "REST"}
+									{status}
 								</Text>
 								<Text
 									className={"text-white text-7xl"}
@@ -67,7 +74,7 @@ const Timer = () => {
 				</CountdownCircleTimer>
 
 				<View className={"flex-row items-center mt-14 justify-center"}>
-					{[...Array(sessionCount)].map((_, index) => {
+					{[...Array(SESSION_COUNT)].map((_, index) => {
 						const isCompleted = index + 1 < currentSession
 						const isActive = index + 1 === currentSession
 
@@ -83,13 +90,13 @@ const Timer = () => {
 						const lineClass = cn("w-7 h-0.5", {
 							"bg-primary opacity-50": index + 1 < currentSession,
 							"bg-[#2F2B3F]":
-								index + 1 >= currentSession && index + 1 < sessionCount
+								index + 1 >= currentSession && index + 1 < SESSION_COUNT
 						})
 
 						return (
 							<View className="flex-row items-center" key={`point ${index}`}>
 								<View className={pointClass} />
-								{index + 1 !== sessionCount && <View className={lineClass} />}
+								{index + 1 !== SESSION_COUNT && <View className={lineClass} />}
 							</View>
 						)
 					})}
@@ -103,6 +110,7 @@ const Timer = () => {
 					!isPlaying && "pl-2"
 				)}
 				style={{ elevation: 8 }}
+				disabled={isAllSessionsCompleted}
 			>
 				<Foundation
 					name={isPlaying ? "pause" : "play"}
